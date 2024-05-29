@@ -4,7 +4,6 @@ import structlog
 
 from authentication import authorize_request
 from request import CompletePromptParameters
-from response import CompleteResponse
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import PlainTextResponse
@@ -48,8 +47,9 @@ def hello():
 @app.post("/packages")
 def complete(
         request: CompletePromptParameters,
-        issuer: str = Depends(authorize_request)) -> CompleteResponse:
+        issuer: str = Depends(authorize_request)) :
     response = vertex_ai_client.text(request.prompt,
+                                     request.ecosystem,
                                      request.model_name,
                                      request.model_parameters.temperature,
                                      request.model_parameters.max_output_tokens,

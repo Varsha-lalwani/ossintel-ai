@@ -1,6 +1,6 @@
 import vertexai
+import json
 
-from response import CompleteResponse
 from typing import Dict, List
 from vertexai.generative_models import (
     GenerationConfig,
@@ -15,24 +15,50 @@ class VertexAI:
 
     def text(self,
              prompt: str,
+             ecosystem: str,
              model_name: str,
              temperature: float,
              max_output_tokens: int,
              top_p: float,
              top_k: int,
-             ) -> CompleteResponse:
-        instructions = "If the packages are not asked return empty json. Search and Return the array of json elements where each element has complete \"packageName\" and \"repositoryUrl\". Return all  packages. Don't provide me duplicates. Both of \"packageName\" and \"repositoryUrl\" shouldn't contain version.\nResponse should be like [\n{\n packageName: \"abcd\",\nrepopsitoryUrl: \"xyz\"\n},\n{\n packageName: \"def\",\nrepopsitoryUrl: \"ddd\"\n}\n]"
+             ) :
+        instructions = "You are a oss packages searching engine.\
+            You will list the packages based on the requirement.\
+            Return the result as a JSON. \
+            The response format should be as follows:\
+            Don't return duplicates. \
+            {\"packages\" :[\
+            {\
+            \"packageName\": \"abcd\",\
+            \"repositoryUrl\": \"xyz\"\
+            },\
+            {\
+            \"packageName\": \"def\",\
+            \"repositoryUrl\": \"ddd\"\
+            }\
+            ]\
+            }\
+            The response should be a JSON Object with a key \"packages\" and value as an array of JSON objects. \
+            Each JSON object should have two keys \"packageName\" and \"repositoryUrl\". \
+            The packages array should contain as many packages as available for the usecase but max 15 packages based with no duplicates. \
+            Ensure that both \"packageName\" and \"repositoryUrl\" do not include version information. \
+            Don't return more than 1 entry from a single person. \
+            Don't return json in any other format."
         model = GenerativeModel(model_name,
                                  system_instruction=[instructions])
         
         response = model.generate_content(
-            prompt,
+            "In" + ecosystem + prompt,
             generation_config=GenerationConfig(temperature=temperature,
                                                 max_output_tokens=max_output_tokens,
                                                 top_p=top_p,
                                                 top_k=top_k),
         )
-        return CompleteResponse(**{"text": response.text})
+        print(response.text)
+        str = response.text
+        str = str.replace("```", "")
+        str = str.replace("json", "")
+        return json.loads(str)
 
 
 

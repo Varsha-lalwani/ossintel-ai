@@ -12,11 +12,12 @@ class ModelParameters(BaseModel):
 
 class CompletePromptParameters(BaseModel):
     prompt: str
+    ecosystem : str
     model_name: Union[str, None] = "gemini-1.0-pro-002"
     model_parameters: ModelParameters = ModelParameters(
         temperature=0,
-        max_output_tokens=2000,
-        top_p=0.1,
+        max_output_tokens=8000,
+        top_p=0,
         top_k=1)
 
     def get_payload_size(self):
