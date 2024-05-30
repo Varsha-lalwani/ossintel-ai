@@ -40,6 +40,10 @@ class VertexAI:
             }\
             The response should be a JSON Object with a key \"packages\" and value as an array of JSON objects. \
             Each JSON object should have two keys \"packageName\" and \"repositoryUrl\". \
+            Package name should be the exact name of package from the ecosystem. \
+            For example the exact package name in https://www.npmjs.com/package for zip.js is \"@zip.js/zip.js\". \
+            Another example for log4j-core the package name is \"org.apache.logging.log4j:log4j-core\". \
+            Repository url should be the url of the repository where the package source code is present. This can be from github/ gitlab/ bitbucket etc. \
             The packages list shouldn't have any duplicates. \
             The packages array should contain as many packages as available for the usecase with a upper limit of 10 packages.\
             Ensure that both \"packageName\" and \"repositoryUrl\" do not include version information. \
@@ -65,13 +69,13 @@ class VertexAI:
 
 def add_ecosystem (prompt: str, ecosystem: str):
     if (ecosystem == "NPM"):
-        return "For JS " + prompt
+        return "For JS " + prompt + "In NPM ecosystem"
     elif (ecosystem == "MAVEN"):
-        return "For Java " + prompt
+        return "For Java " + prompt + "In Maven ecosystem"
     elif (ecosystem == "PYPI"):
-        return "For Python " + prompt
+        return "For Python " + prompt + "In PyPi ecosystem"
     elif (ecosystem == "GO"):
-        return "For Go " + prompt
+        return "For Go " + prompt + "In Go ecosystem"
     else :
         return "For " + ecosystem + " " + prompt
 
